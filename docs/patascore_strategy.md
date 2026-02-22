@@ -32,26 +32,9 @@ Yet these same individuals transact daily through M-Pesa, pay for electricity th
 
 ### 2.1 Data Source Overview
 
-```
-+-------------------------------------------------------------------+
-|                     PataSCORE Data Sources                         |
-+-------------------------------------------------------------------+
-|                                                                   |
-|  +-------------+  +-------------+  +-------------+               |
-|  | Mobile Money|  |   Utility   |  |   Device &  |               |
-|  | (M-Pesa,   |  |  Payments   |  |  Behavioral |               |
-|  |  Airtel $) |  |  (KPLC,    |  |   Signals   |               |
-|  |            |  |   Water)    |  |             |               |
-|  +------+------+  +------+------+  +------+------+               |
-|         |                |                |                       |
-|  +------+------+  +------+------+  +------+------+               |
-|  | E-Commerce  |  |   Social   |  |   GPS &    |               |
-|  | & Digital   |  |   Media    |  |  Location  |               |
-|  |  Payments   |  |  Signals   |  |   Data     |               |
-|  +-------------+  +-------------+  +-------------+               |
-|                                                                   |
-+-------------------------------------------------------------------+
-```
+[![PataSCORE Data Sources](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=3qJDccV2BouzxSrvsx8Hl,bXNN16H4yxe0Yz9177lnrw)
+
+> **[Open interactive diagram](https://excalidraw.com/#json=3qJDccV2BouzxSrvsx8Hl,bXNN16H4yxe0Yz9177lnrw)** — 6 data sources: Mobile Money (15 features, 35-40%), Utility Payments (5, 10-15%), Device & Behavioral (7, 15-20%), E-Commerce (5, 5-10%), Social Media (4, 5%), GPS & Location (5, 10-15%) → ~41 total features across 3 scoring tiers
 
 ### 2.2 Source 1: Mobile Money Transactions (M-Pesa, Airtel Money)
 
@@ -194,42 +177,9 @@ Yet these same individuals transact daily through M-Pesa, pay for electricity th
 
 ### 3.1 Feature Processing Architecture
 
-```
-Raw Data Sources (6 streams)
-         |
-         v
-+---------------------+
-| Feature Extraction   |
-| (per-source ETL)     |
-+----------+----------+
-           |
-           v
-+---------------------+
-| Feature Store        |
-| (Redis + DynamoDB)   |
-|                      |
-| Namespaces:          |
-|  mobile_money.*      |
-|  utility.*           |
-|  device.*            |
-|  social.*            |
-|  ecommerce.*         |
-|  location.*          |
-+----------+----------+
-           |
-           v
-+---------------------+
-| Feature Assembly     |
-| (join by customer_id)|
-| ~60 features total   |
-+----------+----------+
-           |
-     +-----+-----+
-     |           |
-     v           v
- [Training]  [Serving]
-  (batch)    (real-time)
-```
+[![Feature Processing Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=HelHdGKaesIGv0njEFdEC,8vCoPhZWUFL7_NgICrgZag)
+
+> **[Open interactive diagram](https://excalidraw.com/#json=HelHdGKaesIGv0njEFdEC,8vCoPhZWUFL7_NgICrgZag)** — Raw Data Sources → Feature Extraction (per-source ETL) → Feature Store (Redis + DynamoDB, 6 namespaces) → Feature Assembly (join by customer_id, ~41 features) → Training (batch) + Serving (real-time)
 
 ### 3.2 Feature Categories and Weights
 
@@ -276,50 +226,9 @@ The model is trained separately for each tier, so a Tier 1 score is calibrated a
 
 PataSCORE uses a **stacked ensemble** combining gradient boosting and a neural network, each with distinct strengths:
 
-```
-                   Input Features (~41 features)
-                          |
-             +------------+------------+
-             |                         |
-             v                         v
-    +------------------+    +--------------------+
-    | LightGBM         |    | Feed-Forward       |
-    | (Gradient Boost)  |    | Neural Network     |
-    |                  |    |                    |
-    | - Handles nulls  |    | - Captures non-    |
-    |   natively       |    |   linear feature   |
-    | - Fast training  |    |   interactions     |
-    | - Built-in       |    | - Embedding layers |
-    |   feature        |    |   for categorical  |
-    |   importance     |    |   features         |
-    | - Robust to      |    | - Batch norm for   |
-    |   outliers       |    |   stability        |
-    +--------+---------+    +--------+-----------+
-             |                         |
-             v                         v
-        P(default)_gbm           P(default)_nn
-             |                         |
-             +------------+------------+
-                          |
-                          v
-               +--------------------+
-               | Meta-Learner       |
-               | (Logistic          |
-               |  Regression)       |
-               |                    |
-               | Inputs:            |
-               | - P(default)_gbm   |
-               | - P(default)_nn    |
-               | - score_tier       |
-               | - data_completeness|
-               +--------+-----------+
-                        |
-                        v
-                  Final P(default)
-                        |
-                        v
-                  PataSCORE (300-850)
-```
+[![Ensemble Model Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=Ne0glL475qIsMFzL2PzfL,dLcpzpLIyQ2A5307lmeQ-Q)
+
+> **[Open interactive diagram](https://excalidraw.com/#json=Ne0glL475qIsMFzL2PzfL,dLcpzpLIyQ2A5307lmeQ-Q)** — Input Features (~41) → LightGBM + Neural Network (dual base models) → Meta-Learner (Logistic Regression with score_tier + data_completeness) → Final P(default) → PataSCORE (300-850)
 
 ### 4.2 LightGBM Component
 
@@ -547,26 +456,9 @@ PataSCORE must comply with:
 
 ### 6.3 Consent Framework
 
-```
-+-------------------------------------------------------------------+
-|                      Consent Flow                                  |
-+-------------------------------------------------------------------+
-|                                                                   |
-|  1. User opens loan application                                   |
-|  2. Clear disclosure: "We will access your M-Pesa history,        |
-|     utility records, and device information to assess your         |
-|     creditworthiness"                                              |
-|  3. Granular consent toggles:                                      |
-|     [x] M-Pesa transaction history (required)                     |
-|     [ ] KPLC payment records (optional, improves score)            |
-|     [ ] Device information (optional, improves score)              |
-|     [ ] Location data (optional, improves score)                   |
-|  4. User explicitly accepts or declines each source                |
-|  5. Consent receipt stored with timestamp and version              |
-|  6. User can revoke consent at any time via app settings           |
-|                                                                   |
-+-------------------------------------------------------------------+
-```
+[![Consent Flow](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=tIIm6Yt5XMciATHfKv619,NgHx5UcR1gUAjQ7vBoabMw)
+
+> **[Open interactive diagram](https://excalidraw.com/#json=tIIm6Yt5XMciATHfKv619,NgHx5UcR1gUAjQ7vBoabMw)** — 5-step DPA 2019 consent flow: Open loan application → Clear disclosure → Granular consent toggles (M-Pesa required, KPLC/Device/Location optional) → Accept/Decline decision → Store consent receipt + timestamp. User can revoke at any time.
 
 ### 6.4 Bias Monitoring and Fairness
 
@@ -851,55 +743,9 @@ PataSCORE is a tool for inclusion, not predation. Safeguards include:
 
 ## 9. Technical Architecture Summary
 
-```
-+-----------------------------------------------------------------------+
-|                        PataSCORE System                                |
-+-----------------------------------------------------------------------+
-|                                                                       |
-|  DATA LAYER                                                           |
-|  +-----------+  +-----------+  +-----------+  +-----------+          |
-|  | Daraja    |  | KPLC API  |  | Device    |  | OAuth     |          |
-|  | API       |  |           |  | SDK       |  | Social    |          |
-|  | (M-Pesa)  |  | (Utility) |  | (Android) |  | (Meta/LI) |          |
-|  +-----+-----+  +-----+-----+  +-----+-----+  +-----+-----+          |
-|        |              |              |              |                  |
-|        +------+-------+------+-------+------+-------+                  |
-|               |              |              |                          |
-|  PROCESSING   v              v              v                          |
-|  +------------------+  +------------------+  +------------------+     |
-|  | Feature          |  | Consent          |  | Data Quality     |     |
-|  | Extraction       |  | Manager          |  | Validator        |     |
-|  | (PySpark/Python) |  | (DPA 2019)       |  | (Great Expects.) |     |
-|  +--------+---------+  +------------------+  +------------------+     |
-|           |                                                           |
-|  STORAGE  v                                                           |
-|  +------------------+  +------------------+                           |
-|  | Feature Store    |  | Score History     |                          |
-|  | (Redis+DynamoDB) |  | (PostgreSQL)     |                          |
-|  +--------+---------+  +------------------+                           |
-|           |                                                           |
-|  MODEL    v                                                           |
-|  +------------------+  +------------------+  +------------------+     |
-|  | LightGBM         |  | Neural Network   |  | Meta-Learner     |     |
-|  | (Base Model 1)   |  | (Base Model 2)   |  | (Stacking)       |     |
-|  +--------+---------+  +--------+---------+  +--------+---------+     |
-|           |                     |                     |               |
-|  SERVING  +---------------------+---------------------+               |
-|           |                                                           |
-|           v                                                           |
-|  +------------------+  +------------------+  +------------------+     |
-|  | Scoring API      |  | Explainability   |  | Fairness         |     |
-|  | (FastAPI + ONNX) |  | (SHAP Engine)    |  | Monitor          |     |
-|  +--------+---------+  +------------------+  +------------------+     |
-|           |                                                           |
-+-----------------------------------------------------------------------+
-            |
-            v
-    +---------------+
-    | Lender APIs   |
-    | (REST/gRPC)   |
-    +---------------+
-```
+[![PataSCORE System Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=GMMSZd028XU_tOaJ7S9O1,Eo07HGgMRIlBeTcVz1ZGpQ)
+
+> **[Open interactive diagram](https://excalidraw.com/#json=GMMSZd028XU_tOaJ7S9O1,Eo07HGgMRIlBeTcVz1ZGpQ)** — 5-layer architecture: Data Layer (Daraja API, KPLC, Device SDK, OAuth, E-Commerce) → Processing (Feature Extraction, Consent Manager, Data Quality) → Storage (Feature Store, Score History) → Model (LightGBM + Neural Network + Meta-Learner) → Serving (Scoring API, SHAP Explainability, Fairness Monitor) → Lender APIs
 
 ---
 
