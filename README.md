@@ -129,15 +129,34 @@ Place data files in `data/` (gitignored).
 
 ## Model Performance
 
-Cross-validated on 61 borrowers (5-fold stratified):
+### Tuned Results (after finetuning)
+
+Cross-validated on 61 borrowers (5-fold repeated stratified, 10 repeats):
+
+| Model | Mean AUC | Std | Improvement |
+|-------|----------|-----|-------------|
+| Random Forest | **0.761** | 0.113 | +0.134 |
+| Gradient Boosting | 0.722 | 0.097 | +0.226 |
+| Logistic Regression | 0.712 | 0.135 | +0.136 |
+| Stacking Ensemble | 0.688 | 0.159 | — |
+
+Best model: **Random Forest** (tuned with RandomizedSearchCV, `class_weight='balanced_subsample'`, feature selection from 22 → 10 features, probability calibration).
+
+### Finetuning Techniques Applied
+
+- **Feature selection**: SelectKBest reduced 22 features to 10 most predictive
+- **Hyperparameter tuning**: RandomizedSearchCV (50 iterations, RepeatedStratifiedKFold)
+- **SMOTE comparison**: Tested oversampling vs class weighting per model
+- **Stacking ensemble**: Combined all tuned models with logistic meta-learner
+- **Probability calibration**: CalibratedClassifierCV for reliable probability estimates
+
+### Baseline Results (before finetuning)
 
 | Model | Mean AUC | Std |
 |-------|----------|-----|
 | Random Forest | 0.627 | 0.186 |
 | Logistic Regression | 0.576 | 0.197 |
 | Gradient Boosting | 0.496 | 0.133 |
-
-Best model: **Random Forest** (with `class_weight='balanced'` for imbalanced classes).
 
 ## Strategy Documents
 
