@@ -33,6 +33,10 @@ dbt/.user.yml
 frontend/node_modules/
 frontend/dist/
 
+# Caches
+.mypy_cache/
+.ruff_cache/
+
 # IDE
 .vscode/
 .idea/
