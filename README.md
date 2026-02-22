@@ -4,6 +4,20 @@ Credit risk scoring platform analyzing M-Pesa transaction data for 61 borrowers.
 
 ## Architecture
 
+### System Overview
+
+![CreditPulse Architecture](docs/images/architecture.png)
+
+### System Architecture
+
+![System Architecture](docs/images/system-architecture.png)
+
+### dbt Transformation Lineage
+
+![dbt Lineage](docs/images/dbt-lineage.png)
+
+### Project Structure
+
 ```
 credit-pulse/
 ├── backend/         FastAPI application (API + model serving)
