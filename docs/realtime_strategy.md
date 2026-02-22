@@ -44,6 +44,9 @@ Credit Pulse currently operates as a **batch-oriented pipeline** built on lightw
 
 [![Real-Time Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=QoMucRy4IeGmNfZY8TnMj,oH1ZqS7JEOVm_9tgPlcFYg)
 
+<img width="2240" height="1605" alt="image" src="https://github.com/user-attachments/assets/3e73b90c-be80-454d-8d4b-8f9093ef0fd6" />
+
+
 > **[Open interactive diagram](https://excalidraw.com/#json=QoMucRy4IeGmNfZY8TnMj,oH1ZqS7JEOVm_9tgPlcFYg)** — 5-layer architecture: Ingestion (M-Pesa API, Loan Systems, Safaricom SDK) → Streaming (Kafka, PySpark, Schema Registry) → Storage (Redis, DynamoDB, S3) → Serving (FastAPI + ONNX, MLflow, Kubernetes) → Monitoring (Prometheus, Grafana, Great Expectations, PagerDuty)
 
 ### 2.2 Component Breakdown
