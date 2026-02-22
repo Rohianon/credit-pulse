@@ -29,7 +29,7 @@ export default function TransactionFlows() {
           </defs>
           <XAxis dataKey="month" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
           <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}M`} />
-          <Tooltip formatter={(v: number) => `KES ${v.toLocaleString()}`} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,.08)' }} />
+          <Tooltip formatter={(v) => `KES ${Number(v).toLocaleString()}`} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,.08)' }} />
           <Legend />
           <Area type="monotone" dataKey="inflows" stroke="#22c55e" fill="url(#inG)" strokeWidth={2} name="Inflows" />
           <Area type="monotone" dataKey="outflows" stroke="#ef4444" fill="url(#outG)" strokeWidth={2} name="Outflows" />

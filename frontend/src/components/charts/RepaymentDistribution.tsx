@@ -16,7 +16,7 @@ export default function RepaymentDistribution() {
           <Pie data={data} dataKey="count" nameKey="status" cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={4} strokeWidth={0}>
             {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
           </Pie>
-          <Tooltip formatter={(value: number) => value.toLocaleString()} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,.08)' }} />
+          <Tooltip formatter={(value) => Number(value).toLocaleString()} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,.08)' }} />
           <Legend />
         </PieChart>
       </ResponsiveContainer>

@@ -47,8 +47,6 @@ export default function RiskScorer() {
     }
   };
 
-  const riskColor = (label: string) =>
-    label === 'high' ? 'text-red-500' : label === 'medium' ? 'text-amber-500' : 'text-emerald-500';
   const riskBg = (label: string) =>
     label === 'high' ? 'bg-red-500' : label === 'medium' ? 'bg-amber-500' : 'bg-emerald-500';
 

@@ -1,9 +1,17 @@
+-- Customer IDs differ between datasets (different anonymization).
+-- Join by rank order (both have exactly 61 customers).
 with features as (
-    select * from {{ ref('int_transaction_features') }}
+    select
+        *,
+        row_number() over (order by customer_id) as rn
+    from {{ ref('int_transaction_features') }}
 ),
 
 borrowers as (
-    select * from {{ ref('int_borrower_profiles') }}
+    select
+        *,
+        row_number() over (order by customer_id) as rn
+    from {{ ref('int_borrower_profiles') }}
 )
 
 select
@@ -17,6 +25,8 @@ select
     b.is_defaulted,
     b.repayment_ratio,
     b.days_past_due,
+
+    f.customer_id as txn_customer_id,
     coalesce(f.transaction_count, 0) as transaction_count,
     coalesce(f.active_days, 0) as active_days,
     coalesce(f.transaction_frequency, 0) as transaction_frequency,
@@ -39,5 +49,6 @@ select
     coalesce(f.merchant_spend_ratio, 0) as merchant_spend_ratio,
     coalesce(f.p2p_transfer_ratio, 0) as p2p_transfer_ratio,
     coalesce(f.loan_product_count, 0) as loan_product_count
+
 from borrowers b
-left join features f using (customer_id)
+join features f on b.rn = f.rn
