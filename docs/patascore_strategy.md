@@ -467,6 +467,9 @@ PataSCORE must comply with:
 
 [![Consent Flow](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=WZ1Ulq5Ok2TfG5SjfK-Bg,S4MgPPbTDDkz73ClMIR4uw)
 
+<img width="1280" height="1240" alt="image" src="https://github.com/user-attachments/assets/8be20325-958c-4893-9faa-b40da7fe8dac" />
+
+
 > **[Open interactive diagram](https://excalidraw.com/#json=WZ1Ulq5Ok2TfG5SjfK-Bg,S4MgPPbTDDkz73ClMIR4uw)** — 5-step DPA 2019 consent flow: Open loan application → Clear disclosure → Granular consent toggles (M-Pesa required, KPLC/Device/Location optional) → Accept/Decline decision → Store consent receipt + timestamp. User can revoke at any time.
 
 ### 6.4 Bias Monitoring and Fairness
