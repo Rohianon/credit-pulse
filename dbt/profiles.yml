@@ -1,0 +1,7 @@
+credit_pulse:
+  outputs:
+    dev:
+      type: duckdb
+      path: "../credit_pulse.duckdb"
+      threads: 4
+  target: dev
