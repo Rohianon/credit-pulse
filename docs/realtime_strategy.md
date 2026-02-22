@@ -10,6 +10,9 @@ Credit Pulse currently operates as a **batch-oriented pipeline** built on lightw
 
 [![Current Batch Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=0mxcnbIzAXt92AXHJ0F_R,0UahJCa_tLQgyEuLpmwtkA)
 
+<img width="1068" height="1260" alt="image" src="https://github.com/user-attachments/assets/e5efca3d-5655-4dbc-9a90-593a0f9f2957" />
+
+
 > **[Open interactive diagram](https://excalidraw.com/#json=0mxcnbIzAXt92AXHJ0F_R,0UahJCa_tLQgyEuLpmwtkA)** — CSV/XLSX Files → Ingest Pipeline → DuckDB → dbt Transformations → Model Training → FastAPI + React UI
 
 **Current stack summary:**
