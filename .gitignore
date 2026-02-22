@@ -17,7 +17,7 @@ build/
 artifacts/
 
 # Presentation / assignment files
-*.pptx
+~$*.pptx
 *.pdf
 
 # dbt
