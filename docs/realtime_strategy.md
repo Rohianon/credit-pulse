@@ -707,6 +707,9 @@ Run batch and streaming pipelines in parallel. The batch pipeline remains the so
 
 [![Migration Strategy](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=inbSthQpBWtGVOMeKAdy-,ejq38w-OoCLiXNNTwxIfig)
 
+<img width="2120" height="1510" alt="image" src="https://github.com/user-attachments/assets/30cbef6a-deb6-4c63-9a1f-86e8a82d0bbd" />
+
+
 > **[Open interactive diagram](https://excalidraw.com/#json=inbSthQpBWtGVOMeKAdy-,ejq38w-OoCLiXNNTwxIfig)** — 4-phase migration: Phase 1 Dual-Write (batch + shadow streaming) → Phase 2 Shadow Scoring (ONNX, log-only) → Phase 3 Gradual Cutover (5% → 25% → 50% → 100%) → Phase 4 Optimization
 
 **Key activities:**
