@@ -757,6 +757,9 @@ PataSCORE is a tool for inclusion, not predation. Safeguards include:
 
 [![PataSCORE System Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=NTl0Wc0x1kbfa6CwkzZWj,rF-k_Opq-mL8k88bqx6CHA)
 
+<img width="2160" height="1690" alt="image" src="https://github.com/user-attachments/assets/df69024c-f8f4-4425-a316-ad4199b9e804" />
+
+
 > **[Open interactive diagram](https://excalidraw.com/#json=NTl0Wc0x1kbfa6CwkzZWj,rF-k_Opq-mL8k88bqx6CHA)** — 5-layer architecture: Data Layer (Daraja API, KPLC, Device SDK, OAuth, E-Commerce) → Processing (Feature Extraction, Consent Manager, Data Quality) → Storage (Feature Store, Score History) → Model (LightGBM + Neural Network + Meta-Learner) → Serving (Scoring API, SHAP Explainability, Fairness Monitor) → Lender APIs
 
 ---
