@@ -22,7 +22,7 @@ export default function CategoryBreakdown() {
         <BarChart data={chartData}>
           <XAxis dataKey="category" tick={{ fontSize: 10 }} angle={-30} textAnchor="end" height={60} />
           <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}M`} />
-          <Tooltip formatter={(v: number) => `KES ${v.toLocaleString()}`} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,.08)' }} />
+          <Tooltip formatter={(v) => `KES ${Number(v).toLocaleString()}`} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,.08)' }} />
           <Bar dataKey="amount" fill="#f59e0b" radius={[6, 6, 0, 0]} name="Total Amount (KES)" />
         </BarChart>
       </ResponsiveContainer>

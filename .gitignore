@@ -14,12 +14,17 @@ dist/
 build/
 
 # Model artifacts
-artifacts/*.joblib
+artifacts/
+
+# Presentation / assignment files
+*.pptx
+*.pdf
 
 # dbt
-dbt_project/target/
-dbt_project/dbt_packages/
-dbt_project/logs/
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+dbt/.user.yml
 
 # Prefect
 .prefect/
