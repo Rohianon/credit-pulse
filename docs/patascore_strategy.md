@@ -182,6 +182,9 @@ Yet these same individuals transact daily through M-Pesa, pay for electricity th
 
 [![Feature Processing Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=ggVSJ-OyYlPJVrx1wGey6,AmS6WerByiVGxgJfUTxZQg)
 
+<img width="1160" height="1260" alt="image" src="https://github.com/user-attachments/assets/25f9185e-8ca3-480f-a34a-c5b01053f67b" />
+
+
 > **[Open interactive diagram](https://excalidraw.com/#json=ggVSJ-OyYlPJVrx1wGey6,AmS6WerByiVGxgJfUTxZQg)** — Raw Data Sources → Feature Extraction (per-source ETL) → Feature Store (Redis + DynamoDB, 6 namespaces) → Feature Assembly (join by customer_id, ~41 features) → Training (batch) + Serving (real-time)
 
 ### 3.2 Feature Categories and Weights
