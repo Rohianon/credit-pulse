@@ -512,6 +512,9 @@ def validate_micro_batch(batch_df, batch_id):
 
 [![Monitoring & Alerting Stack](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=P-YZfTh3Ijk2AvzKRm8qy,ue_leQFkZJyyknkZIary6w)
 
+<img width="1560" height="1100" alt="image" src="https://github.com/user-attachments/assets/ff0caf23-38a9-40b3-afb2-d22ca76b2a6f" />
+
+
 > **[Open interactive diagram](https://excalidraw.com/#json=P-YZfTh3Ijk2AvzKRm8qy,ue_leQFkZJyyknkZIary6w)** — Metric Sources (Spark, Kafka, FastAPI) → Prometheus → Grafana / AlertManager → PagerDuty + Slack, with Great Expectations (DQ) and Evidently AI (drift detection)
 
 **Key metrics to monitor:**
