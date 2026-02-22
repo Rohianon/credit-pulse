@@ -234,6 +234,9 @@ PataSCORE uses a **stacked ensemble** combining gradient boosting and a neural n
 
 [![Ensemble Model Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=FGqOHeBuC8QWS9kNjHaVC,3JF0YQOYv8i1VxX9JAhL2A)
 
+<img width="1320" height="1310" alt="image" src="https://github.com/user-attachments/assets/4ade52f9-9075-4656-8bd7-c402ba9eec72" />
+
+
 > **[Open interactive diagram](https://excalidraw.com/#json=FGqOHeBuC8QWS9kNjHaVC,3JF0YQOYv8i1VxX9JAhL2A)** — Input Features (~41) → LightGBM + Neural Network (dual base models) → Meta-Learner (Logistic Regression with score_tier + data_completeness) → Final P(default) → PataSCORE (300-850)
 
 ### 4.2 LightGBM Component
