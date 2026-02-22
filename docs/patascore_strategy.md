@@ -32,9 +32,9 @@ Yet these same individuals transact daily through M-Pesa, pay for electricity th
 
 ### 2.1 Data Source Overview
 
-[![PataSCORE Data Sources](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=3qJDccV2BouzxSrvsx8Hl,bXNN16H4yxe0Yz9177lnrw)
+[![PataSCORE Data Sources](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=mD7LsmnAzYS4jyCjAsgbm,-o5mXdUeGrIvGpVkCzYPBA)
 
-> **[Open interactive diagram](https://excalidraw.com/#json=3qJDccV2BouzxSrvsx8Hl,bXNN16H4yxe0Yz9177lnrw)** — 6 data sources: Mobile Money (15 features, 35-40%), Utility Payments (5, 10-15%), Device & Behavioral (7, 15-20%), E-Commerce (5, 5-10%), Social Media (4, 5%), GPS & Location (5, 10-15%) → ~41 total features across 3 scoring tiers
+> **[Open interactive diagram](https://excalidraw.com/#json=mD7LsmnAzYS4jyCjAsgbm,-o5mXdUeGrIvGpVkCzYPBA)** — 6 data sources: Mobile Money (15 features, 35-40%), Utility Payments (5, 10-15%), Device & Behavioral (7, 15-20%), E-Commerce (5, 5-10%), Social Media (4, 5%), GPS & Location (5, 10-15%) → ~41 total features across 3 scoring tiers
 
 ### 2.2 Source 1: Mobile Money Transactions (M-Pesa, Airtel Money)
 
@@ -177,9 +177,9 @@ Yet these same individuals transact daily through M-Pesa, pay for electricity th
 
 ### 3.1 Feature Processing Architecture
 
-[![Feature Processing Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=HelHdGKaesIGv0njEFdEC,8vCoPhZWUFL7_NgICrgZag)
+[![Feature Processing Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=ZxtdyImkhdkflfzjMmFfF,BHsuFDpxdChlsbO3i_z5Hg)
 
-> **[Open interactive diagram](https://excalidraw.com/#json=HelHdGKaesIGv0njEFdEC,8vCoPhZWUFL7_NgICrgZag)** — Raw Data Sources → Feature Extraction (per-source ETL) → Feature Store (Redis + DynamoDB, 6 namespaces) → Feature Assembly (join by customer_id, ~41 features) → Training (batch) + Serving (real-time)
+> **[Open interactive diagram](https://excalidraw.com/#json=ZxtdyImkhdkflfzjMmFfF,BHsuFDpxdChlsbO3i_z5Hg)** — Raw Data Sources → Feature Extraction (per-source ETL) → Feature Store (Redis + DynamoDB, 6 namespaces) → Feature Assembly (join by customer_id, ~41 features) → Training (batch) + Serving (real-time)
 
 ### 3.2 Feature Categories and Weights
 
@@ -226,9 +226,9 @@ The model is trained separately for each tier, so a Tier 1 score is calibrated a
 
 PataSCORE uses a **stacked ensemble** combining gradient boosting and a neural network, each with distinct strengths:
 
-[![Ensemble Model Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=Ne0glL475qIsMFzL2PzfL,dLcpzpLIyQ2A5307lmeQ-Q)
+[![Ensemble Model Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=kEoYvY7Xf_EmTd9j2np_1,Yp9umIlwaZibteYUV2Vs_A)
 
-> **[Open interactive diagram](https://excalidraw.com/#json=Ne0glL475qIsMFzL2PzfL,dLcpzpLIyQ2A5307lmeQ-Q)** — Input Features (~41) → LightGBM + Neural Network (dual base models) → Meta-Learner (Logistic Regression with score_tier + data_completeness) → Final P(default) → PataSCORE (300-850)
+> **[Open interactive diagram](https://excalidraw.com/#json=kEoYvY7Xf_EmTd9j2np_1,Yp9umIlwaZibteYUV2Vs_A)** — Input Features (~41) → LightGBM + Neural Network (dual base models) → Meta-Learner (Logistic Regression with score_tier + data_completeness) → Final P(default) → PataSCORE (300-850)
 
 ### 4.2 LightGBM Component
 
@@ -456,9 +456,9 @@ PataSCORE must comply with:
 
 ### 6.3 Consent Framework
 
-[![Consent Flow](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=tIIm6Yt5XMciATHfKv619,NgHx5UcR1gUAjQ7vBoabMw)
+[![Consent Flow](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=AaoqrjpHimkNy7PdnyM6e,keji5GcS5AF0-hsA6_dOuQ)
 
-> **[Open interactive diagram](https://excalidraw.com/#json=tIIm6Yt5XMciATHfKv619,NgHx5UcR1gUAjQ7vBoabMw)** — 5-step DPA 2019 consent flow: Open loan application → Clear disclosure → Granular consent toggles (M-Pesa required, KPLC/Device/Location optional) → Accept/Decline decision → Store consent receipt + timestamp. User can revoke at any time.
+> **[Open interactive diagram](https://excalidraw.com/#json=AaoqrjpHimkNy7PdnyM6e,keji5GcS5AF0-hsA6_dOuQ)** — 5-step DPA 2019 consent flow: Open loan application → Clear disclosure → Granular consent toggles (M-Pesa required, KPLC/Device/Location optional) → Accept/Decline decision → Store consent receipt + timestamp. User can revoke at any time.
 
 ### 6.4 Bias Monitoring and Fairness
 
@@ -743,9 +743,9 @@ PataSCORE is a tool for inclusion, not predation. Safeguards include:
 
 ## 9. Technical Architecture Summary
 
-[![PataSCORE System Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=GMMSZd028XU_tOaJ7S9O1,Eo07HGgMRIlBeTcVz1ZGpQ)
+[![PataSCORE System Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=DvPlLpQj1xJj4cqH7CAC8,SlQ8a7CsxyAuH1vA09MgqQ)
 
-> **[Open interactive diagram](https://excalidraw.com/#json=GMMSZd028XU_tOaJ7S9O1,Eo07HGgMRIlBeTcVz1ZGpQ)** — 5-layer architecture: Data Layer (Daraja API, KPLC, Device SDK, OAuth, E-Commerce) → Processing (Feature Extraction, Consent Manager, Data Quality) → Storage (Feature Store, Score History) → Model (LightGBM + Neural Network + Meta-Learner) → Serving (Scoring API, SHAP Explainability, Fairness Monitor) → Lender APIs
+> **[Open interactive diagram](https://excalidraw.com/#json=DvPlLpQj1xJj4cqH7CAC8,SlQ8a7CsxyAuH1vA09MgqQ)** — 5-layer architecture: Data Layer (Daraja API, KPLC, Device SDK, OAuth, E-Commerce) → Processing (Feature Extraction, Consent Manager, Data Quality) → Storage (Feature Store, Score History) → Model (LightGBM + Neural Network + Meta-Learner) → Serving (Scoring API, SHAP Explainability, Fairness Monitor) → Lender APIs
 
 ---
 
