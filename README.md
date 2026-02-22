@@ -1,86 +1,131 @@
 # Credit Pulse
 
-Credit risk scoring platform analyzing M-Pesa transaction data for 61 borrowers. Built as a data engineering assessment for Pezesha Africa.
+Credit risk scoring platform analyzing M-Pesa transaction data for 61 borrowers. Built as part of the Pezesha Africa data engineering assessment.
 
 ## Architecture
 
 ```
-Data Layer:     DuckDB (embedded OLAP) ← CSV/XLSX ingestion
-Transforms:     dbt-duckdb (staging → intermediate → mart models)
-ML:             scikit-learn (LogisticRegression, RandomForest, GradientBoosting)
-API:            FastAPI (scoring, insights, SQL analysis endpoints)
-Frontend:       React + Vite + TailwindCSS + Recharts
+credit-pulse/
+├── backend/         FastAPI application (API + model serving)
+│   ├── api/routes/  REST endpoints: scoring, insights, SQL analysis
+│   ├── core/        Config, database connection management
+│   ├── models/      Pydantic request/response schemas
+│   └── services/    Business logic: credit model, analytics, features
+├── dbt/             dbt-duckdb transformations
+│   └── models/      staging → intermediate → marts
+├── frontend/        React + Vite + TailwindCSS + Recharts
+├── pipelines/       Data ingestion and model training scripts
+├── sql/             Standalone SQL analysis queries
+├── docs/            Strategy documents (Tasks 5 & 6)
+└── artifacts/       Trained model + metrics (gitignored)
 ```
-
-## Quick Start
-
-```bash
-# Install dependencies
-uv sync --extra all
-cd frontend && npm install && cd ..
-
-# Run the full pipeline
-make setup        # ingest data + run dbt models
-make train        # train credit scoring model
-
-# Start the app
-make serve        # FastAPI on http://localhost:8000
-make dev          # Frontend dev server + API (hot reload)
-```
-
-## Project Structure
-
-| Directory | Purpose |
-|-----------|---------|
-| `backend/` | FastAPI app, API routes, services, Pydantic models |
-| `dbt/` | dbt models (staging, intermediate, marts) |
-| `pipelines/` | Data ingestion and model training scripts |
-| `frontend/` | React dashboard with charts and risk scorer |
-| `sql/` | SQL analysis queries (Task 3) |
-| `docs/` | Strategy documents (Tasks 5 & 6) |
-| `artifacts/` | Trained model and metrics (gitignored) |
-| `data/` | Raw data files (gitignored) |
-
-## Data Pipeline
-
-1. **Ingest** — Load 105K M-Pesa transactions, 61 loan records, 591 SQL extract records into DuckDB
-2. **Transform** — dbt models classify transactions (airtime, betting, utility, P2P, etc.) and compute 22 per-customer features
-3. **Train** — Compare 3 classifiers with 5-fold stratified CV, serialize best model by AUC-ROC
-4. **Serve** — FastAPI exposes scoring endpoint + analytics for the React dashboard
-
-## Key Features Engineered
-
-- Transaction volume: count, active days, frequency
-- Cash flows: total inflows/outflows, inflow-outflow ratio
-- Balance health: average, minimum, volatility
-- Spending patterns: betting ratio, utility ratio, cash withdrawal ratio, airtime ratio
-- Financial behavior: P2P transfer ratio, loan product count, merchant spend ratio
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/score` | Score a borrower's credit risk |
-| GET | `/api/insights/overview` | Summary statistics |
-| GET | `/api/insights/features` | Feature importance |
-| GET | `/api/insights/segments` | Risk segment distribution |
-| GET | `/api/insights/transactions` | Transaction patterns |
-| GET | `/api/sql/total` | Total records & distinct users |
-| GET | `/api/sql/top-users` | Top 5 users by records |
-| GET | `/api/sql/records-per-day` | Daily record counts |
-
-## Strategy Documents
-
-- **[Real-time Scaling Strategy](docs/realtime_strategy.md)** — PySpark + Kafka architecture for 1M+ daily transactions
-- **[PataSCORE Strategy](docs/patascore_strategy.md)** — Alternative data credit scoring for financial inclusion
 
 ## Tech Stack
 
 | Layer | Tool |
 |-------|------|
-| Database | DuckDB |
+| Database | DuckDB (embedded OLAP) |
 | Transforms | dbt-duckdb |
-| ML | scikit-learn |
+| ML | scikit-learn (Logistic Regression, Random Forest, Gradient Boosting) |
 | API | FastAPI |
 | Frontend | React + Vite + TailwindCSS + Recharts |
 | Package Mgmt | uv |
+
+## Quick Start
+
+### Prerequisites
+
+- Python 3.11+
+- Node.js 18+
+- [uv](https://docs.astral.sh/uv/)
+
+### Setup
+
+```bash
+# Install Python dependencies
+uv sync
+
+# Install dbt (optional, for running transformations)
+uv pip install dbt-duckdb
+
+# Install frontend dependencies
+cd frontend && npm install && cd ..
+
+# Ingest data into DuckDB
+make ingest
+
+# Run dbt transformations
+make dbt-run
+
+# Train credit scoring model
+make train
+
+# Build frontend
+make frontend-build
+
+# Start the server
+make serve
+```
+
+Then open http://localhost:8000 to view the dashboard.
+
+### Development
+
+```bash
+# Run frontend dev server (port 5173) + API server (port 8000) concurrently
+make dev
+```
+
+## Data
+
+- **mpesa_statements.csv**: 105,854 M-Pesa transactions across 61 customers
+- **loan_repayment_data.csv**: 61 loans (73.8% repaid, 26.2% defaulted)
+- **sql_extract.xlsx**: 999 records, 100 users
+
+Place data files in `data/` (gitignored).
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health` | Health check |
+| POST | `/api/score` | Score a borrower's credit risk |
+| GET | `/api/insights/overview` | Portfolio summary stats |
+| GET | `/api/insights/features` | Feature importance from trained model |
+| GET | `/api/insights/segments` | Risk segment distribution |
+| GET | `/api/insights/transactions` | Transaction pattern charts data |
+| GET | `/api/insights/repayment` | Repayment distribution |
+| GET | `/api/insights/betting` | Betting spend vs default correlation |
+| GET | `/api/sql/total` | SQL extract: total records & users |
+| GET | `/api/sql/latest-per-user` | SQL extract: latest record per user |
+| GET | `/api/sql/top-users` | SQL extract: top 5 users by records |
+| GET | `/api/sql/records-per-day` | SQL extract: daily record counts |
+
+## Feature Engineering
+
+22 features computed from M-Pesa transactions via dbt:
+
+- **Volume**: transaction_count, active_days, transaction_frequency
+- **Flows**: total_inflows, total_outflows, inflow_outflow_ratio
+- **Balance**: avg_balance, min_balance, max_balance, balance_volatility
+- **Received**: avg_received_amount, max_received_amount
+- **Behavioral**: betting_spend_ratio, utility_payment_ratio, cash_withdrawal_ratio, airtime_spend_ratio, merchant_spend_ratio, p2p_transfer_ratio
+- **Products**: loan_product_count
+- **Temporal**: spending_consistency, days_since_last_transaction, account_age_days
+
+## Model Performance
+
+Cross-validated on 61 borrowers (5-fold stratified):
+
+| Model | Mean AUC | Std |
+|-------|----------|-----|
+| Random Forest | 0.627 | 0.186 |
+| Logistic Regression | 0.576 | 0.197 |
+| Gradient Boosting | 0.496 | 0.133 |
+
+Best model: **Random Forest** (with `class_weight='balanced'` for imbalanced classes).
+
+## Strategy Documents
+
+- [Real-time Processing Strategy](docs/realtime_strategy.md) — Scaling to 1M+ transactions/day with Kafka + PySpark
+- [PataSCORE Alternative Data Strategy](docs/patascore_strategy.md) — Credit scoring with mobile money, utilities, device, and behavioral data

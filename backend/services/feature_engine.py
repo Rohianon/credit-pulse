@@ -1,4 +1,11 @@
-FEATURE_COLUMNS = [
+"""Feature column definitions for the credit scoring model.
+
+Defines the canonical list of feature columns and the target column
+used during training and inference. Any changes to the feature set
+must be reflected here so that training and prediction stay in sync.
+"""
+
+FEATURE_COLUMNS: list[str] = [
     "transaction_count",
     "active_days",
     "transaction_frequency",
@@ -23,4 +30,4 @@ FEATURE_COLUMNS = [
     "loan_product_count",
 ]
 
-TARGET_COLUMN = "is_defaulted"
+TARGET_COLUMN: str = "is_defaulted"
