@@ -34,6 +34,9 @@ Yet these same individuals transact daily through M-Pesa, pay for electricity th
 
 [![PataSCORE Data Sources](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=NZK7pCrNK68K5V8wg_o-J,MsYPZ1XpB3PArk9Xwshj4A)
 
+<img width="1520" height="1130" alt="image" src="https://github.com/user-attachments/assets/a606e9b4-fcfb-4c22-84e3-480e658a78de" />
+
+
 > **[Open interactive diagram](https://excalidraw.com/#json=NZK7pCrNK68K5V8wg_o-J,MsYPZ1XpB3PArk9Xwshj4A)** — 6 data sources: Mobile Money (15 features, 35-40%), Utility Payments (5, 10-15%), Device & Behavioral (7, 15-20%), E-Commerce (5, 5-10%), Social Media (4, 5%), GPS & Location (5, 10-15%) → ~41 total features across 3 scoring tiers
 
 ### 2.2 Source 1: Mobile Money Transactions (M-Pesa, Airtel Money)
