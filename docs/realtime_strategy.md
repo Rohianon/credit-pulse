@@ -8,9 +8,9 @@
 
 Credit Pulse currently operates as a **batch-oriented pipeline** built on lightweight, local-first tooling:
 
-[![Current Batch Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=Qk5pUFJ451DK3hJycSXKm,oa5Bz8zr1nGynh9ERKY62A)
+[![Current Batch Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=0mxcnbIzAXt92AXHJ0F_R,0UahJCa_tLQgyEuLpmwtkA)
 
-> **[Open interactive diagram](https://excalidraw.com/#json=Qk5pUFJ451DK3hJycSXKm,oa5Bz8zr1nGynh9ERKY62A)** — CSV/XLSX Files → Ingest Pipeline → DuckDB → dbt Transformations → Model Training → FastAPI + React UI
+> **[Open interactive diagram](https://excalidraw.com/#json=0mxcnbIzAXt92AXHJ0F_R,0UahJCa_tLQgyEuLpmwtkA)** — CSV/XLSX Files → Ingest Pipeline → DuckDB → dbt Transformations → Model Training → FastAPI + React UI
 
 **Current stack summary:**
 
@@ -39,9 +39,9 @@ Credit Pulse currently operates as a **batch-oriented pipeline** built on lightw
 
 ### 2.1 Architecture Overview
 
-[![Real-Time Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=F4g6oryHcMHsSpAGD-sHb,XRgoNuqG19hpwdlmQLdY2w)
+[![Real-Time Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=QoMucRy4IeGmNfZY8TnMj,oH1ZqS7JEOVm_9tgPlcFYg)
 
-> **[Open interactive diagram](https://excalidraw.com/#json=F4g6oryHcMHsSpAGD-sHb,XRgoNuqG19hpwdlmQLdY2w)** — 5-layer architecture: Ingestion (M-Pesa API, Loan Systems, Safaricom SDK) → Streaming (Kafka, PySpark, Schema Registry) → Storage (Redis, DynamoDB, S3) → Serving (FastAPI + ONNX, MLflow, Kubernetes) → Monitoring (Prometheus, Grafana, Great Expectations, PagerDuty)
+> **[Open interactive diagram](https://excalidraw.com/#json=QoMucRy4IeGmNfZY8TnMj,oH1ZqS7JEOVm_9tgPlcFYg)** — 5-layer architecture: Ingestion (M-Pesa API, Loan Systems, Safaricom SDK) → Streaming (Kafka, PySpark, Schema Registry) → Storage (Redis, DynamoDB, S3) → Serving (FastAPI + ONNX, MLflow, Kubernetes) → Monitoring (Prometheus, Grafana, Great Expectations, PagerDuty)
 
 ### 2.2 Component Breakdown
 
@@ -504,9 +504,9 @@ def validate_micro_batch(batch_df, batch_id):
 
 ### 8.2 Operational Monitoring Stack
 
-[![Monitoring & Alerting Stack](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=9edfbP6hJyfb6Pg3st-Rh,ynk3f7LNy4wkk1RSvgC1ZQ)
+[![Monitoring & Alerting Stack](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=P-YZfTh3Ijk2AvzKRm8qy,ue_leQFkZJyyknkZIary6w)
 
-> **[Open interactive diagram](https://excalidraw.com/#json=9edfbP6hJyfb6Pg3st-Rh,ynk3f7LNy4wkk1RSvgC1ZQ)** — Metric Sources (Spark, Kafka, FastAPI) → Prometheus → Grafana / AlertManager → PagerDuty + Slack, with Great Expectations (DQ) and Evidently AI (drift detection)
+> **[Open interactive diagram](https://excalidraw.com/#json=P-YZfTh3Ijk2AvzKRm8qy,ue_leQFkZJyyknkZIary6w)** — Metric Sources (Spark, Kafka, FastAPI) → Prometheus → Grafana / AlertManager → PagerDuty + Slack, with Great Expectations (DQ) and Evidently AI (drift detection)
 
 **Key metrics to monitor:**
 
@@ -696,9 +696,9 @@ spec:
 
 Run batch and streaming pipelines in parallel. The batch pipeline remains the source of truth.
 
-[![Migration Strategy](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=WYZA0jB4UrV4ELDzaFfjf,7z65k2kV6e96PY5vJgcnpA)
+[![Migration Strategy](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=inbSthQpBWtGVOMeKAdy-,ejq38w-OoCLiXNNTwxIfig)
 
-> **[Open interactive diagram](https://excalidraw.com/#json=WYZA0jB4UrV4ELDzaFfjf,7z65k2kV6e96PY5vJgcnpA)** — 4-phase migration: Phase 1 Dual-Write (batch + shadow streaming) → Phase 2 Shadow Scoring (ONNX, log-only) → Phase 3 Gradual Cutover (5% → 25% → 50% → 100%) → Phase 4 Optimization
+> **[Open interactive diagram](https://excalidraw.com/#json=inbSthQpBWtGVOMeKAdy-,ejq38w-OoCLiXNNTwxIfig)** — 4-phase migration: Phase 1 Dual-Write (batch + shadow streaming) → Phase 2 Shadow Scoring (ONNX, log-only) → Phase 3 Gradual Cutover (5% → 25% → 50% → 100%) → Phase 4 Optimization
 
 **Key activities:**
 - Deploy Kafka and produce events alongside batch ingestion
