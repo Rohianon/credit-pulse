@@ -8,33 +8,9 @@
 
 Credit Pulse currently operates as a **batch-oriented pipeline** built on lightweight, local-first tooling:
 
-```
-CSV/XLSX Files
-    |
-    v
-[Ingest Pipeline]  -- Python + DuckDB
-    |                  (pipelines/flows/ingest.py)
-    v
-[DuckDB]  -- Embedded OLAP database
-    |        (credit_pulse.duckdb)
-    v
-[dbt Transformations]  -- Staging -> Intermediate -> Marts
-    |                     (dbt_project/models/)
-    |   stg_mpesa_transactions    -->  int_transaction_features
-    |   stg_loan_repayments       -->  int_borrower_profiles
-    |                                       |
-    |                                       v
-    |                              mart_credit_features
-    |                              mart_risk_segments
-    v
-[Model Training]  -- scikit-learn, XGBoost
-    |                (backend/services/credit_model.py)
-    v
-[FastAPI Serving]  -- /api/score endpoint
-    |                 (backend/api/routes/scoring.py)
-    v
-[React Dashboard]  -- Vite + React frontend
-```
+[![Current Batch Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=8E_8ur5jMLR6OydslXZMH,LqWfAWhw2ycAYYou4rAurw)
+
+> **[Open interactive diagram](https://excalidraw.com/#json=8E_8ur5jMLR6OydslXZMH,LqWfAWhw2ycAYYou4rAurw)** — CSV/XLSX Files → Ingest Pipeline → DuckDB → dbt Transformations → Model Training → FastAPI + React UI
 
 **Current stack summary:**
 
@@ -63,66 +39,9 @@ CSV/XLSX Files
 
 ### 2.1 Architecture Overview
 
-```
-                           +------------------+
-                           |  Data Sources    |
-                           |  - M-Pesa API    |
-                           |  - Loan Systems  |
-                           |  - Safaricom SDK |
-                           +--------+---------+
-                                    |
-                           (Events via webhooks/CDC)
-                                    |
-                                    v
-                    +-------------------------------+
-                    |       Apache Kafka             |
-                    |  +----------+ +-------------+  |
-                    |  | mpesa.   | | loan.       |  |
-                    |  | txns.raw | | events.raw  |  |
-                    |  +----------+ +-------------+  |
-                    |  | features | | risk.scores |  |
-                    |  | .computed| | .updates    |  |
-                    |  +----------+ +-------------+  |
-                    +------+--------+--------+-------+
-                           |        |        |
-              +------------+   +----+----+   +----------+
-              |                |         |              |
-              v                v         v              v
-     +-----------------+ +----------+ +----------+ +----------+
-     | PySpark         | | Schema   | | Great    | | Kafka    |
-     | Structured      | | Registry | | Expects. | | Connect  |
-     | Streaming       | | (Avro)   | | (DQ)     | | (S3 Sink)|
-     +---------+-------+ +----------+ +----------+ +----+-----+
-               |                                        |
-               |  (computed features)                   | (raw archival)
-               v                                        v
-     +-----------------+                      +------------------+
-     | Feature Store   |                      | Data Lake (S3/   |
-     | (Redis Cluster  |                      | MinIO) - Parquet |
-     |  + DynamoDB)    |                      +------------------+
-     +--------+--------+
-              |
-              |  (low-latency feature lookup)
-              v
-     +-----------------+     +--------------------+
-     | Model Serving   |<--->| Model Registry     |
-     | FastAPI + ONNX  |     | (MLflow)           |
-     | / TF Serving    |     +--------------------+
-     +--------+--------+
-              |
-              v
-     +-----------------+
-     | API Gateway /   |
-     | Load Balancer   |
-     +--------+--------+
-              |
-     +--------+--------+
-     | Consumers:      |
-     | - Credit apps   |
-     | - Risk dashbd   |
-     | - Loan origina. |
-     +-----------------+
-```
+[![Real-Time Architecture](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=fIMErdrYbYpxAmVfXcfwe,Hexu-0i7_0DP9PKpD2dRfw)
+
+> **[Open interactive diagram](https://excalidraw.com/#json=fIMErdrYbYpxAmVfXcfwe,Hexu-0i7_0DP9PKpD2dRfw)** — 5-layer architecture: Ingestion (M-Pesa API, Loan Systems, Safaricom SDK) → Streaming (Kafka, PySpark, Schema Registry) → Storage (Redis, DynamoDB, S3) → Serving (FastAPI + ONNX, MLflow, Kubernetes) → Monitoring (Prometheus, Grafana, Great Expectations, PagerDuty)
 
 ### 2.2 Component Breakdown
 
@@ -585,18 +504,9 @@ def validate_micro_batch(batch_df, batch_id):
 
 ### 8.2 Operational Monitoring Stack
 
-```
-+-----------------+     +------------+     +------------+
-| Spark Metrics   |---->| Prometheus |---->| Grafana    |
-| Kafka Metrics   |     |            |     | Dashboards |
-| App Metrics     |     +-----+------+     +-----+------+
-+-----------------+           |                   |
-                              v                   v
-                      +-------+-------+   +-------+------+
-                      | AlertManager  |   | PagerDuty /  |
-                      | (Thresholds)  |   | Slack Alerts |
-                      +---------------+   +--------------+
-```
+[![Monitoring & Alerting Stack](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=sdvv9OhQ3B4Aeg8F6ZvQF,kwpVJ1UbYtiVGBiBYjKeXA)
+
+> **[Open interactive diagram](https://excalidraw.com/#json=sdvv9OhQ3B4Aeg8F6ZvQF,kwpVJ1UbYtiVGBiBYjKeXA)** — Metric Sources (Spark, Kafka, FastAPI) → Prometheus → Grafana / AlertManager → PagerDuty + Slack, with Great Expectations (DQ) and Evidently AI (drift detection)
 
 **Key metrics to monitor:**
 
@@ -786,17 +696,9 @@ spec:
 
 Run batch and streaming pipelines in parallel. The batch pipeline remains the source of truth.
 
-```
-Current Batch Pipeline  ------>  DuckDB  ------>  FastAPI (joblib)
-         |                                              |
-         +-- (mirror events to Kafka) -->  Kafka        |
-                                             |          |
-                                        Spark Stream    |
-                                             |          |
-                                        Redis (shadow)  |
-                                             |          |
-                                      [Compare outputs] <--+
-```
+[![Migration Strategy](https://img.shields.io/badge/View_Diagram-Excalidraw-6965db)](https://excalidraw.com/#json=lZg9KzxyrIC__CB3jhl8u,OnNsM8V5DDB0E4aw5VmxTQ)
+
+> **[Open interactive diagram](https://excalidraw.com/#json=lZg9KzxyrIC__CB3jhl8u,OnNsM8V5DDB0E4aw5VmxTQ)** — 4-phase migration: Phase 1 Dual-Write (batch + shadow streaming) → Phase 2 Shadow Scoring (ONNX, log-only) → Phase 3 Gradual Cutover (5% → 25% → 50% → 100%) → Phase 4 Optimization
 
 **Key activities:**
 - Deploy Kafka and produce events alongside batch ingestion
