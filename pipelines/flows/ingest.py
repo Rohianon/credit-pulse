@@ -4,6 +4,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import duckdb
+import pandas as pd
 
 from backend.core.config import DATA_DIR, DB_PATH
 
@@ -27,9 +28,11 @@ def _ingest_xlsx(con: duckdb.DuckDBPyConnection):
     path = DATA_DIR / "sql_extract.xlsx"
     if not path.exists():
         return
-    con.execute("INSTALL spatial; LOAD spatial;")
+    # Read only the columns we need by index to avoid duplicate column name issues
+    df = pd.read_excel(path, usecols=[0, 1, 2, 3], header=0)
+    df.columns = ["id", "user_id", "file", "ex_date"]
     con.execute("DROP TABLE IF EXISTS raw_sql_extract")
-    con.execute(f"CREATE TABLE raw_sql_extract AS SELECT id, user_id, file, ex_date FROM st_read('{path}')")
+    con.execute("CREATE TABLE raw_sql_extract AS SELECT * FROM df")
     count = con.execute("SELECT COUNT(*) FROM raw_sql_extract").fetchone()[0]
     print(f"Ingested {count:,} rows into raw_sql_extract")
 
