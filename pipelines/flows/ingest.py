@@ -29,7 +29,7 @@ def _ingest_xlsx(con: duckdb.DuckDBPyConnection):
         return
     con.execute("INSTALL spatial; LOAD spatial;")
     con.execute("DROP TABLE IF EXISTS raw_sql_extract")
-    con.execute(f"CREATE TABLE raw_sql_extract AS SELECT * FROM st_read('{path}')")
+    con.execute(f"CREATE TABLE raw_sql_extract AS SELECT id, user_id, file, ex_date FROM st_read('{path}')")
     count = con.execute("SELECT COUNT(*) FROM raw_sql_extract").fetchone()[0]
     print(f"Ingested {count:,} rows into raw_sql_extract")
 
