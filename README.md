@@ -13,6 +13,7 @@ Credit risk scoring platform analyzing M-Pesa transaction data for 61 borrowers.
 ![System Architecture](docs/images/system-architecture.png)
 
 ### dbt Transformation Lineage
+** 591 sql transactions. Not 999 **
 
 ![dbt Lineage](docs/images/dbt-lineage.png)
 
